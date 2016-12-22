@@ -36,13 +36,18 @@ WAVE_DQ = ""
 WAVE_DEAD = ""
 WAVE = [WAVE1, WAVE2, WAVE3, WAVE4, WAVE5, WAVE_DQ, WAVE_DEAD]
 
+audio_list = []
+for i in xrange(len(WAVE)) :
+	audio_list.append([])
+
+
 CHUNK = 1024
 OUTPUT = True
 
 class App() :
 	def __init__(self) :
 		self.p = pyaudio.PyAudio()
-		self.audio_list = [[], [], [], [], [], [], []]
+		self.audio_list = audio_list
 
 	def audio_init(self, name, i) :				# 足音wavの情報を保存する
 		wf = wave.open(name, 'rb')
@@ -103,10 +108,10 @@ class App() :
 			s = self.self.board.digital[Switch].read		# Read Switch-value
 
 			if s == 1 :
-				self.audio(WAVE_DQ)
+				self.audio(WAVE_DQ, 5)
 
 			if right_value < LEVEL_R :
-				self.audio(WAVE_DEAD)
+				self.audio(WAVE_DEAD, 6)
 
 			if LEVEL1 <= curve_value < LEVEL2:
 				self.judge(WAVE1, 0)
@@ -122,3 +127,6 @@ class App() :
 
 			elif LEVEL5 <= curve_value :
 				self.judge(WAVE5, 4)
+
+if __name__ == "__main__" :
+	app = App()
