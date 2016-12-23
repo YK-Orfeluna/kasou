@@ -3,28 +3,29 @@
 import wave, time
 import pyfirmata, pyaudio
 
-#DEBUG = True
-DEBUG = False
+DEBUG = True
+#DEBUG = False
 
-PORT = ""							# Arduino port: ls /dev/cu*
+PORT = "/dev/cu.usbmodem1411"		# Arduino port: ls /dev/cu*
 
-CURVE = 0							# Curve-sensor position in Analog-pin
-RIGHT = 0							# Right-sensor position in Analog-pin
-SWITCH = 0							# Switch position in Digital-pin
+CURVE = 5							# Curve-sensor position in Analog-pin
+RIGHT = 4							# Right-sensor position in Analog-pin
+PRESS = 3							# Press-sensor position in Analog-pin
 
-LEVEL1 = 0							# Thread of curve-sensor-value
+LEVEL1 = 0							# Thread-value of curve-sensor
 LEVEL2 = 0
 LEVEL3 = 0
 LEVEL4 = 0
 LEVEL5 = 0
 
-LEVEL_R = 0							# Thread of right-sensor-value
+LEVEL_R = 0							# Thread-value of right-sensor
+LEVEL_P = 0							# Thread-value of press-sensor
 
-LED1 = 0							# LED position in Digital-pin
-LED2 = 0
-LED3 = 0
-LED4 = 0
-LED5 = 0
+LED1 = 2							# LED position in Digital-pin
+LED2 = 4
+LED3 = 6
+LED4 = 8
+LED5 = 10
 LED = [LED1, LED2,LED3, LED4, LED5]
 
 WAVE1 = ""							# wave-file's name
@@ -76,7 +77,7 @@ class App() :
 		if INFO :
 			print("step!")
 
-	def digital_write(pin, value) :		# Write "HIGH" or "LOW"
+	def digital_write(self, pin, value) :		# Write "HIGH" or "LOW"
 		if value != 1 and value != 0 :
 			sys.exit("function: digital_write\n2nd arg. is 1 or 0")
 		self.board.digital[pin].write(value)
@@ -96,18 +97,29 @@ class App() :
 		self.board = pyfirmata.Arduino(PORT)		# Connect Arduino
 		print("Connect Arduino")
 
+		"""
 		for i in xrange(len(WAVE)) :
 			self.audio_init(WAVE[i])
 		print("Audio init")
+		"""
 
 		print("System is Ready")
 
 		while True :
-			curve_value = self.board.analog[CURVE].read		# Read curve-sensor-value
-			right_value = self.board.analog[RIGHT].read		# Read right-sensor-value
-			s = self.self.board.digital[Switch].read		# Read Switch-value
+			curve_value = self.board.analog[CURVE].read()		# Read value of curve-sensro
+			right_value = self.board.analog[RIGHT].read()		# Read value of right-sensor
+			press_value = self.board.analog[PRESS].read()		# Read value of press-sensor
 
-			if s == 1 :
+			if DEBUG :
+				print("Curve-Sensor = %s" %curve_value)
+				print("Right-Sensor = %s" %right_value)
+				print("Press-Sensor = %s" %press_value)
+
+			for i in xrange(len(LED)) :
+				self.digital_write(LED[i], 1)
+
+			"""
+			if press_value > LEVEL_P :
 				self.audio(WAVE_DQ, 5)
 
 			if right_value < LEVEL_R :
@@ -127,6 +139,8 @@ class App() :
 
 			elif LEVEL5 <= curve_value :
 				self.judge(WAVE5, 4)
+			"""
 
 if __name__ == "__main__" :
 	app = App()
+	app.main()
