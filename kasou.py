@@ -97,6 +97,13 @@ class App() :
 		self.board = pyfirmata.Arduino(PORT)		# Connect Arduino
 		print("Connect Arduino")
 
+		it = pyfirmata.util.Iterator(self.board)
+		it.start()
+
+		curve = self.board.get_pin('a:%s:i' %CURVE)
+		right = self.board.get_pin('a:%s:i' %RIGHT)
+		press = self.board.get_pin('a:%s:i' %PRESS)
+
 		"""
 		for i in xrange(len(WAVE)) :
 			self.audio_init(WAVE[i])
@@ -106,9 +113,9 @@ class App() :
 		print("System is Ready")
 
 		while True :
-			curve_value = self.board.analog[CURVE].read()		# Read value of curve-sensro
-			right_value = self.board.analog[RIGHT].read()		# Read value of right-sensor
-			press_value = self.board.analog[PRESS].read()		# Read value of press-sensor
+			curve_value = curve.read()		# Read value of curve-sensro
+			right_value = right.read()		# Read value of right-sensor
+			press_value = press.read()		# Read value of press-sensor
 
 			if DEBUG :
 				print("Curve-Sensor = %s" %curve_value)
