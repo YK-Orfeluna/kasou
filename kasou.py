@@ -41,7 +41,6 @@ audio_list = []
 for i in xrange(len(WAVE)) :
 	audio_list.append([])
 
-
 CHUNK = 1024
 OUTPUT = True
 
