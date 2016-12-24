@@ -45,25 +45,42 @@ for i in xrange(len(WAVE)) :
 CHUNK = 1024
 OUTPUT = True
 
+def frameRate(fps) :							# Config of framerate
+	ms = round(1000.0 / fps, 0)					# Between-time of frame(mill-second)
+	s = ms / 1000.0								# Between-time of frame(second)
+	time.sleep(s)
+
 class App() :
 	def __init__(self) :
 		self.p = pyaudio.PyAudio()
 		self.audio_list = audio_list
 
-	def audio_init(self, name, i) :				# 足音wavの情報を保存する
+	def arduino_init(self) :
+		self.board = pyfirmata.Arduino(PORT)			# Connect to Arduino
+
+		it = pyfirmata.util.Iterator(self.board)		# Preparation to read Analog-pin
+		it.start()
+
+		self.curve = self.board.get_pin('a:%s:i' %CURVE)
+		self.right = self.board.get_pin('a:%s:i' %RIGHT)
+		self.press = self.board.get_pin('a:%s:i' %PRESS)
+
+		print("Connect Arduino")
+
+	def audio_init(self, name, i) :
 		wf = wave.open(name, 'rb')
 		self.audio_list[i][0].append(p.get_format_from_width(wf.getsampwidth()))	# ストリームを読み書きするときのデータ型
-		self.audio_list[i][1].append(wf.getnchannels())							# ステレオかモノラルかの選択 1でモノラル 2でステレオ
-		self.audio_list[i][2].append(wf.getframerate())							# サンプル周波数
+		self.audio_list[i][1].append(wf.getnchannels())								# ステレオかモノラルかの選択 1でモノラル 2でステレオ
+		self.audio_list[i][2].append(wf.getframerate())								# サンプル周波数
 		if DEBUG:
 			print("%s: Audio init" %name)	
 
-	def audio(name, i) :						# 音を鳴らす
+	def audio(name, i) :						# Play wave-file
 		wf = wave.open(name, 'rb')
 		stream = p.open(format=self.audio_list[i][0],			# ストリームを読み書きするときのデータ型
 						channels=self.audio_list[i][1],			# ステレオかモノラルかの選択 1でモノラル 2でステレオ
 						rate=self.audio_list[i][2],				# サンプル周波数
-						output=OUTPUT)						# 出力モード
+						output=OUTPUT)							# 出力モード
 
 		data = wf.readframes(chunk)								# 1024個読み取り
 
@@ -74,15 +91,15 @@ class App() :
 		stream.stop_stream()
 		stream.close()
 
-		if INFO :
-			print("step!")
+		if DEBUG :
+			print("Audio play")
 
 	def digital_write(self, pin, value) :		# Write "HIGH" or "LOW"
 		if value != 1 and value != 0 :
 			sys.exit("function: digital_write\n2nd arg. is 1 or 0")
 		self.board.digital[pin].write(value)
 
-	def judge(self, name, num) :
+	def judge(self, name, num) :				# Kasou-Award
 		for i in xrange(num) :
 			self.digital_write(LED[i], 1)
 
@@ -94,15 +111,7 @@ class App() :
 		time.sleep(1)
 
 	def main(self) :
-		self.board = pyfirmata.Arduino(PORT)		# Connect Arduino
-		print("Connect Arduino")
-
-		it = pyfirmata.util.Iterator(self.board)
-		it.start()
-
-		curve = self.board.get_pin('a:%s:i' %CURVE)
-		right = self.board.get_pin('a:%s:i' %RIGHT)
-		press = self.board.get_pin('a:%s:i' %PRESS)
+		self.arduino_init()
 
 		"""
 		for i in xrange(len(WAVE)) :
@@ -113,14 +122,14 @@ class App() :
 		print("System is Ready")
 
 		while True :
-			curve_value = curve.read()		# Read value of curve-sensro
-			right_value = right.read()		# Read value of right-sensor
-			press_value = press.read()		# Read value of press-sensor
+			frameRate(30)
+
+			curve_value = self.curve.read()		# Read value of curve-sensro
+			right_value = self.right.read()		# Read value of right-sensor
+			press_value = self.press.read()		# Read value of press-sensor
 
 			if DEBUG :
-				print("Curve-Sensor = %s" %curve_value)
-				print("Right-Sensor = %s" %right_value)
-				print("Press-Sensor = %s" %press_value)
+				print("Sensor-Value, Curve - Right - Press : %s - %s - %s" %(curve_value, right_value, press_value)) 
 
 			for i in xrange(len(LED)) :
 				self.digital_write(LED[i], 1)
