@@ -2,31 +2,15 @@
 
 import wave, time
 import pyfirmata, pyaudio
+from config import *
 
 DEBUG = True
 #DEBUG = False
 
-PORT = "/dev/cu.usbmodem1411"		# Arduino port: ls /dev/cu*
 
-CURVE = 5							# Curve-sensor position in Analog-pin
-RIGHT = 4							# Right-sensor position in Analog-pin
-PRESS = 3							# Press-sensor position in Analog-pin
 
-LEVEL1 = 0							# Thread-value of curve-sensor
-LEVEL2 = 0
-LEVEL3 = 0
-LEVEL4 = 0
-LEVEL5 = 0
-
-LEVEL_R = 0							# Thread-value of right-sensor
-LEVEL_P = 0							# Thread-value of press-sensor
-
-LED1 = 2							# LED position in Digital-pin
-LED2 = 4
-LED3 = 6
-LED4 = 8
-LED5 = 10
-LED = [LED1, LED2,LED3, LED4, LED5]
+LEVEL_R = 0.5						# Thread-value of right-sensor
+LEVEL_P = 0.1						# Thread-value of press-sensor
 
 WAVE1 = ""							# wave-file's name
 WAVE2 = ""
@@ -41,13 +25,9 @@ audio_list = []
 for i in xrange(len(WAVE)) :
 	audio_list.append([])
 
+
 CHUNK = 1024
 OUTPUT = True
-
-def frameRate(fps) :							# Config of framerate
-	ms = round(1000.0 / fps, 0)					# Between-time of frame(mill-second)
-	s = ms / 1000.0								# Between-time of frame(second)
-	time.sleep(s)
 
 class App() :
 	def __init__(self) :
