@@ -109,9 +109,13 @@ class App() :
 
 			if DEBUG :
 				print("Sensor-Value, Curve - Right - Press : %s - %s - %s" %(curve_value, right_value, press_value)) 
-
-			for i in xrange(len(LED)) :
-				self.digital_write(LED[i], 1)
+			
+			if True :
+				for i in LED :
+					self.digital_write(i, 1)
+			else :
+				for i in LED :
+					self.digital_write(i, 0)
 
 			"""
 			if press_value > LEVEL_P :

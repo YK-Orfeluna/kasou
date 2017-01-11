@@ -23,21 +23,34 @@ while True :
 
 	print("Sensor-Value, Curve - Right - Press : %s - %s - %s" %(curve_value, right_value, press_value)) 
 
-	if False :
-		if LEVEL1 <= curve_value < LEVEL2:
-			board.digital[LED5].write(1)
+	if True :
+		if curve_value < LEVEL1 :
+			for i in LED :
+				board.digital[i].write(1)
+
+		elif LEVEL1 <= curve_value < LEVEL2:
+			l = [0, 1, 1, 1, 1]
+			for x, i in enumerate(LED) :
+				board.digital[i].write(l[x])
 
 		elif LEVEL2 <= curve_value < LEVEL3 :
-			board.digital[LED4].write(1)
+			l = [0, 0, 1, 1, 1]
+			for x, i in enumerate(LED) :
+				board.digital[i].write(l[x])
 			
 		elif LEVEL3 <= curve_value < LEVEL4 :
-			board.digital[LED3].write(1)
+			l = [0, 0, 0, 1, 1]
+			for x, i in enumerate(LED) :
+				board.digital[i].write(l[x])
 
 		elif LEVEL4 <= curve_value < LEVEL5 :
-			board.digital[LED2].write(1)
+			l = [0, 0, 0, 0, 1]
+			for x, i in enumerate(LED) :
+				board.digital[i].write(l[x])
 
 		elif LEVEL5 <= curve_value :
-			board.digital[LED1].write(1)
+			for i in LED :
+				board.digital[i].write(0)
 
 	else :
 		for i in LED :

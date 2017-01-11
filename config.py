@@ -2,7 +2,8 @@
 
 import time
 
-PORT = "/dev/cu.usbmodem1411"		# Arduino port: ls /dev/cu*
+#PORT = "/dev/cu.usbmodem1411"		# Arduino port: ls /dev/cu*
+PORT = "/dev/cu.usbmodem1421"		# Arduino port: ls /dev/cu*
 
 CURVE = 5							# Curve-sensor position in Analog-pin
 RIGHT = 4							# Right-sensor position in Analog-pin
@@ -15,10 +16,10 @@ LED4 = 8
 LED5 = 10
 LED = [LED1, LED2,LED3, LED4, LED5]
 
-LEVEL1 = 0.1							# Thread-value of curve-sensor
-LEVEL2 = 0.15
-LEVEL3 = 0.2
-LEVEL4 = 0.25
+LEVEL1 = 0.17							# Thread-value of curve-sensor
+LEVEL2 = 0.2
+LEVEL3 = 0.24
+LEVEL4 = 0.27
 LEVEL5 = 0.3
 
 def frameRate(fps) :							# Config of framerate
