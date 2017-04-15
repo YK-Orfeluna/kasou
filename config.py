@@ -2,8 +2,8 @@
 
 import time
 
-#PORT = "/dev/cu.usbmodem1411"		# Arduino port: ls /dev/cu*
-PORT = "/dev/cu.usbmodem1421"		# Arduino port: ls /dev/cu*
+PORT = "/dev/cu.usbmodem1411"		# Arduino port: ls /dev/cu*
+#PORT = "/dev/cu.usbmodem1421"		# Arduino port: ls /dev/cu*
 
 CURVE = 5							# Curve-sensor position in Analog-pin
 RIGHT = 4							# Right-sensor position in Analog-pin
